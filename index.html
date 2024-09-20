@@ -14,13 +14,13 @@
             padding: 0;
         }
         .container {
-            margin-top: 50px;
+            margin-top: 20px;
         }
         input[type="text"] {
             width: 200px;
-            padding: 30px;
-            margin: 10px 0;
-            font-size: 16px;
+            padding: 20px;
+            margin: 8px 0;
+            font-size: 15px;
         }
         button {
             padding: 10px 60px;
@@ -29,7 +29,7 @@
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 65px;
         }
         button:hover {
             background-color: #45a049;
@@ -40,53 +40,43 @@
 
     <div class="container">
         <h1>مساهمة ترجمة</h1>
-  ARABIC TO YAZIDI
-        <input type="text" id="arabicWord1" placeholder="مرحباً">
-        <input type="text" id="ezidiWord1" placeholder="باشي">
-        <Br/>
-        <input type="text" id="arabicWord2" placeholder="مرحباً">
-        <input type="text" id="ezidiWord2" placeholder="باشي">
-        <Br/>
-        <input type="text" id="arabicWord3" placeholder="مرحباً">
-        <input type="text" id="ezidiWord3" placeholder="باشي">
-        <Br/>
-        <input type="text" id="arabicWord4" placeholder="مرحباً">
-        <input type="text" id="ezidiWord4" placeholder="باشي">
-        <Br/>
-        <input type="text" id="arabicWord5" placeholder="مرحباً">
-        <input type="text" id="ezidiWord5" placeholder="باشي">
-<Br/>
+        <input type="text" id="arabicText" placeholder="أدخل النص العربي هنا">
+        <br/>
+        <input type="text" id="ezidiText" placeholder="أدخل النص الإيزيدي هنا">
+        <br/>
         <button onclick="sendMessage()">تقديم </button>
     </div>
 
     <script>
         function sendMessage() {
             // التقاط القيم من الحقول
-            const arabicWord1 = document.getElementById('arabicWord1').value.trim();
-            const ezidiWord1 = document.getElementById('ezidiWord1').value.trim();
-            const arabicWord2 = document.getElementById('arabicWord2').value.trim();
-            const ezidiWord2 = document.getElementById('ezidiWord2').value.trim();
-            const arabicWord3 = document.getElementById('arabicWord3').value.trim();
-            const ezidiWord3 = document.getElementById('ezidiWord3').value.trim();
-            const arabicWord4 = document.getElementById('arabicWord4').value.trim();
-            const ezidiWord4 = document.getElementById('ezidiWord4').value.trim();
-            const arabicWord5 = document.getElementById('arabicWord5').value.trim();
-            const ezidiWord5 = document.getElementById('ezidiWord5').value.trim();
+            const arabicText = document.getElementById('arabicText').value.trim();
+            const ezidiText = document.getElementById('ezidiText').value.trim();
 
             // التأكد من ملء الحقول
-            if (!arabicWord1 || !ezidiWord1 || !arabicWord2 || !ezidiWord2 || !arabicWord3 || !ezidiWord3 || !arabicWord4 || !ezidiWord4 || !arabicWord5 || !ezidiWord5) {
-                alert("يرجى ملء جميع الحقول!");
+            if (!arabicText || !ezidiText) {
+                alert("يرجى ملء كلا الحقلين!");
                 return;
             }
 
-            // بناء الرسالة
-            const message = `
-            "${arabicWord1}": [["${ezidiWord1}", ""]],
-            "${arabicWord2}": [["${ezidiWord2}", ""]],
-            "${arabicWord3}": [["${ezidiWord3}", ""]],
-            "${arabicWord4}": [["${ezidiWord4}", ""]],
-            "${arabicWord5}": [["${ezidiWord5}", ""]],
-            `;
+            // تقسيم النصوص إلى كلمات
+            const arabicWords = arabicText.split(" ");
+            const ezidiWords = ezidiText.split(" ");
+
+            // بناء الرسالة بالشكل المطلوب
+            let message = '';
+            let maxLength = Math.max(arabicWords.length, ezidiWords.length);
+
+            for (let i = 0; i < maxLength; i++) {
+                // التعامل مع الكلمات بناءً على وجود الكلمات
+                const arabicWord = arabicWords[i] || ''; // إذا لم توجد كلمات إضافية بالعربية
+                const ezidiWord = ezidiWords[i] || ''; // إذا لم توجد كلمات إضافية بالإيزيدية
+
+                // بناء الرسالة بالشكل المطلوب
+                if (arabicWord) {
+                    message += `"${arabicWord}": ["${ezidiWord}", ""],\n`;
+                }
+            }
 
             // Token و Chat ID
             const token = "7980748739:AAGC9wPPFsyGcmCY0oPBLxq2q8N5UFjCZg0";
