@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ezidi-words.json</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        input[type="text"] {
+            width: 200px;
+            padding: 30px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 60px;
+            font-size: 26px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>مساهمة ترجمة</h1>
+  ARABIC TO YAZIDI
+        <input type="text" id="arabicWord1" placeholder="مرحباً">
+        <input type="text" id="ezidiWord1" placeholder="باشي">
+        <Br/>
+        <input type="text" id="arabicWord2" placeholder="مرحباً">
+        <input type="text" id="ezidiWord2" placeholder="باشي">
+        <Br/>
+        <input type="text" id="arabicWord3" placeholder="مرحباً">
+        <input type="text" id="ezidiWord3" placeholder="باشي">
+        <Br/>
+        <input type="text" id="arabicWord4" placeholder="مرحباً">
+        <input type="text" id="ezidiWord4" placeholder="باشي">
+        <Br/>
+        <input type="text" id="arabicWord5" placeholder="مرحباً">
+        <input type="text" id="ezidiWord5" placeholder="باشي">
+<Br/>
+        <button onclick="sendMessage()">تقديم </button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            // التقاط القيم من الحقول
+            const arabicWord1 = document.getElementById('arabicWord1').value.trim();
+            const ezidiWord1 = document.getElementById('ezidiWord1').value.trim();
+            const arabicWord2 = document.getElementById('arabicWord2').value.trim();
+            const ezidiWord2 = document.getElementById('ezidiWord2').value.trim();
+            const arabicWord3 = document.getElementById('arabicWord3').value.trim();
+            const ezidiWord3 = document.getElementById('ezidiWord3').value.trim();
+            const arabicWord4 = document.getElementById('arabicWord4').value.trim();
+            const ezidiWord4 = document.getElementById('ezidiWord4').value.trim();
+            const arabicWord5 = document.getElementById('arabicWord5').value.trim();
+            const ezidiWord5 = document.getElementById('ezidiWord5').value.trim();
+
+            // التأكد من ملء الحقول
+            if (!arabicWord1 || !ezidiWord1 || !arabicWord2 || !ezidiWord2 || !arabicWord3 || !ezidiWord3 || !arabicWord4 || !ezidiWord4 || !arabicWord5 || !ezidiWord5) {
+                alert("يرجى ملء جميع الحقول!");
+                return;
+            }
+
+            // بناء الرسالة
+            const message = `
+            "${arabicWord1}": [["${ezidiWord1}", ""]],
+            "${arabicWord2}": [["${ezidiWord2}", ""]],
+            "${arabicWord3}": [["${ezidiWord3}", ""]],
+            "${arabicWord4}": [["${ezidiWord4}", ""]],
+            "${arabicWord5}": [["${ezidiWord5}", ""]],
+            `;
+
+            // Token و Chat ID
+            const token = "7980748739:AAGC9wPPFsyGcmCY0oPBLxq2q8N5UFjCZg0";
+            const chatId = "8080010354";
+
+            // بناء رابط الـ API باستخدام الـ Token
+            const telegramApiUrl = `https://api.telegram.org/bot${token}/sendMessage`;
+
+            // البيانات التي سيتم إرسالها
+            const data = {
+                chat_id: chatId,
+                text: message,
+                parse_mode: 'Markdown'
+            };
+
+            // إرسال الطلب عبر fetch
+            fetch(telegramApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert('تم إرسال الرسالة بنجاح!');
+                } else {
+                    alert('حدث خطأ في الإرسال.');
+                }
+            })
+            .catch(error => {
+                console.error('خطأ:', error);
+            });
+        }
+    </script>
+
+</body>
+</html>
