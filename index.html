@@ -3,116 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ezidi-words.json</title>
+    <title>إضافة مساهمة</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            direction: rtl;
             text-align: center;
-            background-color: #f0f0f0;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
+
         .container {
-            margin-top: 20px;
-        }
-        input[type="text"] {
-            width: 200px;
+            margin-top: 50px;
+            background: #fff;
             padding: 20px;
-            margin: 8px 0;
-            font-size: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: inline-block;
         }
+
+        h1 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 16px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
         button {
-            padding: 10px 60px;
-            font-size: 26px;
-            cursor: pointer;
-            background-color: #4CAF50;
+            background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 65px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
+
         button:hover {
-            background-color: #45a049;
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>مساهمة ترجمة</h1>
-        <input type="text" id="arabicText" placeholder="أدخل النص العربي هنا">
-        <br/>
-        <input type="text" id="ezidiText" placeholder="أدخل النص الإيزيدي هنا">
-        <br/>
-        <button onclick="sendMessage()">تقديم </button>
+        <h1>مساهمة</h1>
+        <form id="contributionForm">
+            <label for="arabicWord">كلمة العربية:</label>
+            <input type="text" id="arabicWord" name="arabicWord" required>
+            <label for="yezidiWord">كلمة ايزيدي:</label>
+            <input type="text" id="yezidiWord" name="yezidiWord" required>
+            <button type="submit" id="addButton">إضافة إلى ترجمة</button>
+        </form>
     </div>
-
     <script>
-        function sendMessage() {
-            // التقاط القيم من الحقول
-            const arabicText = document.getElementById('arabicText').value.trim();
-            const ezidiText = document.getElementById('ezidiText').value.trim();
+        document.getElementById("contributionForm").addEventListener("submit", function (e) {
+            e.preventDefault();
 
-            // التأكد من ملء الحقول
-            if (!arabicText || !ezidiText) {
-                alert("يرجى ملء كلا الحقلين!");
+            const arabicWord = document.getElementById("arabicWord").value.trim();
+            const yezidiWord = document.getElementById("yezidiWord").value.trim();
+
+            if (!arabicWord || !yezidiWord) {
+                alert("يرجى ملء جميع الحقول.");
                 return;
             }
 
-            // تقسيم النصوص إلى كلمات
-            const arabicWords = arabicText.split(" ");
-            const ezidiWords = ezidiText.split(" ");
-
-            // بناء الرسالة بالشكل المطلوب
-            let message = '';
-            let maxLength = Math.max(arabicWords.length, ezidiWords.length);
-
-            for (let i = 0; i < maxLength; i++) {
-                // التعامل مع الكلمات بناءً على وجود الكلمات
-                const arabicWord = arabicWords[i] || ''; // إذا لم توجد كلمات إضافية بالعربية
-                const ezidiWord = ezidiWords[i] || ''; // إذا لم توجد كلمات إضافية بالإيزيدية
-
-                // بناء الرسالة بالشكل المطلوب
-                if (arabicWord) {
-                    message += `"${arabicWord}": [["${ezidiWord}", ""]],\n`;
-                }
-            }
-
-            // Token و Chat ID
-            const token = "7980748739:AAGC9wPPFsyGcmCY0oPBLxq2q8N5UFjCZg0";
-            const chatId = "8080010354";
-
-            // بناء رابط الـ API باستخدام الـ Token
-            const telegramApiUrl = `https://api.telegram.org/bot${token}/sendMessage`;
-
-            // البيانات التي سيتم إرسالها
-            const data = {
-                chat_id: chatId,
-                text: message,
-                parse_mode: 'Markdown'
-            };
-
-            // إرسال الطلب عبر fetch
-            fetch(telegramApiUrl, {
+            // إرسال البيانات إلى الخادم لإضافتها إلى ملف JSON
+            fetch('/add-word', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    arabicWord,
+                    yezidiWord
+                }),
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    alert('تم إرسال الرسالة بنجاح!');
-                } else {
-                    alert('حدث خطأ في الإرسال.');
-                }
-            })
-            .catch(error => {
-                console.error('خطأ:', error);
-            });
-        }
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        alert("شكراً على الإضافة! تم تخزين الكلمة بنجاح.");
+                        document.getElementById("contributionForm").reset();
+                    } else {
+                        alert("حدث خطأ أثناء إضافة الكلمة.");
+                    }
+                })
+                .catch(() => {
+                    alert("تعذر الاتصال بالخادم.");
+                });
+        });
     </script>
-
 </body>
 </html>
